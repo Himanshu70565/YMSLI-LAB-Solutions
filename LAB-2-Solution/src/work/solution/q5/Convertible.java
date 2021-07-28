@@ -12,6 +12,7 @@ public class Convertible extends Vehicle {
 		this.isHoodOpen=isHoodOpen;
 	}
 
+	@Override
 	public void display() {
 		System.out.println("**** Convertible ****");
 		super.display();

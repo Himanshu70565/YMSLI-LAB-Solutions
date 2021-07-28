@@ -8,6 +8,7 @@ public class Car extends Vehicle{
 		this.noOfDoor=noOfDoor;
 	}
 
+	@Override
 	public void display() {
 		System.out.println("**** Car ****");
 		super.display();

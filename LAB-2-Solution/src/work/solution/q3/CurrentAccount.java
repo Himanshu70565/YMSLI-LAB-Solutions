@@ -4,15 +4,17 @@ public class CurrentAccount extends Account {
 
 	private int tradeLicenseNumber;
 
-	public CurrentAccount(String userName,double initialBalance,int tradeLicenseNumber) {
-		super(userName,initialBalance);
-		this.tradeLicenseNumber=tradeLicenseNumber;
+	public CurrentAccount(String userName, double initialBalance, int tradeLicenseNumber) {
+		super(userName, initialBalance);
+		this.tradeLicenseNumber = tradeLicenseNumber;
 	}
-	
+
+	@Override
 	public double getBalance() {
 		return super.getBalance();
 	}
 
+	@Override
 	public void withdraw(double amount) {
 
 		if (getBalance() >= amount) {

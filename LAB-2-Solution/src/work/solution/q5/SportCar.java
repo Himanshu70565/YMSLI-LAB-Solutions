@@ -14,6 +14,7 @@ public class SportCar extends Vehicle{
 		this.noOfDoor=2;
 	}
 	
+	@Override
 	public void display() {
 		System.out.println("**** Sports Car ****");
 		super.display();

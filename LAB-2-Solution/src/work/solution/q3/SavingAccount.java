@@ -11,10 +11,12 @@ public class SavingAccount extends Account{
 		this.maximumWithdrawAmount=50000;
 	}
 	
+	@Override
 	public double getBalance() {
 		return super.getBalance()+(interest*super.getBalance()/100);
 	}
 	
+	@Override
 	public void withdraw(double amount) {
 		if(amount<maximumWithdrawAmount) {
 			if(getBalance()>=amount) {
