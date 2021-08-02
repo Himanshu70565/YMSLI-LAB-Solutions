@@ -4,7 +4,7 @@ class Job implements Runnable{
 	private int randNumber;
 	
 	public Job() {
-		this.randNumber=(int)(Math.random()*10+1);	;
+		this.randNumber=(int)(Math.random()*10+1);
 	}
 	
 	@Override
