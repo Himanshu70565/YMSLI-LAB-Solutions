@@ -1,4 +1,4 @@
-package work.solution.q4;
+package work.solution.v1.q4;
 
 import java.io.File;
 import java.io.FileNotFoundException;

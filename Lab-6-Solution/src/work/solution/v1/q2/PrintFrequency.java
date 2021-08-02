@@ -1,4 +1,4 @@
-package work.solution.q2;
+package work.solution.v1.q2;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -9,7 +9,7 @@ public class PrintFrequency {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 
 	
-		String sourceFilePath = "C:\\Users\\ve00ym259\\Desktop\\YMSLI Lab Solutions\\Lab-6-Solution\\src\\work\\solution\\q2\\story.txt";
+		String sourceFilePath = "C:\\Users\\ve00ym259\\Desktop\\YMSLI Lab Solutions\\Lab-6-Solution\\src\\work\\solution\\v1\\q2\\story.txt";
 		File source = new File(sourceFilePath);
 
 		// ARM

@@ -1,4 +1,4 @@
-package work.solution.q3;
+package work.solution.v1.q3;
 
 import java.util.Arrays;
 
