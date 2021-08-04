@@ -27,6 +27,7 @@ public class ByteStreamReadWrite {
 			int byteRead;
 			while ((byteRead = inStream.read()) != -1) {
 				outStream.write((char) byteRead);
+				System.out.print((char)byteRead);
 			}
 
 		} catch (FileNotFoundException e) {
@@ -37,19 +38,19 @@ public class ByteStreamReadWrite {
 
 		}
 
-		try (BufferedInputStream inStream2 = new BufferedInputStream(new FileInputStream(inputFilePath));) {
-
-			System.out.println("Printing using formatted output(System.out.print or println)");
-			int byteRead;
-			while ((byteRead = inStream2.read()) != -1) {
-				System.out.print((char) byteRead);
-			}
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+//		try (BufferedInputStream inStream2 = new BufferedInputStream(new FileInputStream(inputFilePath));) {
+//
+//			System.out.println("Printing using formatted output(System.out.print or println)");
+//			int byteRead;
+//			while ((byteRead = inStream2.read()) != -1) {
+//				System.out.print((char) byteRead);
+//			}
+//
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
 
 	}
 }
