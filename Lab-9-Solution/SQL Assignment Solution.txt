@@ -1,0 +1,324 @@
+create table sailors(
+Sid int NOT NULL,
+Sname varchar(100) NOT NULL,
+Rating int NOT NULL,
+age double NOT NULL,
+PRIMARY KEY(Sid)
+);
+
+
+insert into sailors
+values(22,"Dustin",7,45.0),(29,"Brutus",1,33.0),
+      (31,"Lubber",9,55.0),(32,"Andy",8,25.0),
+      (58,"Rusty",10,35);
+
+
+-------------------------------------------------------------------------
+
+create table boats(
+Bid int NOT NULL,
+Bname varchar(100) NOT NULL,
+Color varchar(100) NOT NULL,
+PRIMARY KEY(BId)
+);
+
+insert into boats
+values(101,"Interlake","Blue"),(102,"Interlake","Red"),
+       (103,"Clipper","Green"),(104,"Marine","Red");	
+
+
+-------------------------------------------------------------------------
+
+create table reserves
+(
+Sid int NOT NULL,
+Bid int NOT NULL,
+Day date,
+FOREIGN KEY(Sid) References sailors(Sid),
+FOREIGN KEY(Bid) References boats(Bid) 
+);
+
+insert into reserves
+values(22,101,"2004-01-01"),(22,102,"2004-01-01"),(22,103,"2004-02-01"),
+      (31,103,"2005-05-05"),(32,104,"2005-04-07");
+
+
+
+*****************************************************************************************************************
+
+Q1.
+
+Option 1 : Using natural join
+mysql> select S1.Sname from sailors S1 natural join reserves R1 natural join Boats B1
+    -> where B1.Color="Red";
++--------+
+| Sname  |
++--------+
+| Dustin |
+| Andy   |
++--------+
+
+
+Option2 :Using Cross join
+mysql> Select S1.Sname from sailors S1,boats B1,reserves R1 where S1.Sid=R1.Sid and B1.Bid=R1.Bid and B1.Color="Red";
++--------+
+| Sname  |
++--------+
+| Dustin |
+| Andy   |
++--------+
+2 rows in set (0.00 sec)
+
+Option3 : Using short syntax
+mysql> Select sailors.Sname from sailors natural join boats natural join reserves where       boats.color="Red";
++--------+
+| Sname  |
++--------+
+| Dustin |
+| Andy   |
++--------+
+
+
+**************************************************************************************************************************************
+
+Q2.
+
+
+Version1 : 
+mysql> select DISTINCT(sailors.Sname) from sailors natural join reserves;
++--------+
+| Sname  |
++--------+
+| Dustin |
+| Lubber |
+| Andy   |
++--------+
+3 rows in set (0.00 sec)
+
+
+Version2 : 
+mysql> select Sname from sailors where Sid IN (Select DISTINCT(Sid) from reserves);
++--------+
+| Sname  |
++--------+
+| Dustin |
+| Lubber |
+| Andy   |
++--------+
+
+Version3:
+mysql> select DISTINCT(Sname) from sailors,reserves where sailors.sid=reserves.sid;
++--------+
+| Sname  |
++--------+
+| Dustin |
+| Lubber |
+| Andy   |
++--------+
+3 rows in set (0.00 sec)
+
+
+**************************************************************************************************************************************************
+
+Q4.
+mysql> select Sid,Age from sailors where Sname like "B%B" and LENGTH(Sname)>=3;
+Empty set (0.00 sec)
+
+**************************************************************************************************************************************************
+
+
+Q5. (But Mysql does not support Intersect)
+mysql> select * from sailors,boats,reserves
+    -> where sailors.Sid=reserves.Sid and boats.bid=reserves.Bid and boats.color="red"
+    -> INTERSECT
+    -> select * from sailors,boats,reserves
+    -> where sailors.Sid=reserves.Sid and boats.bid=reserves.Bid and boats.color="green";
+
+
+**************************************************************************************************************************************************
+
+Q6. (But Mysql does not support Except)
+mysql> select * from sailors,boats,reserves
+    -> where sailors.Sid=reserves.Sid and boats.bid=reserves.Bid and boats.color="red"
+    -> EXCEPT
+    -> select * from sailors,boats,reserves
+    -> where sailors.Sid=reserves.Sid and boats.bid=reserves.Bid and boats.color="green";
+
+**************************************************************************************************************************************************
+
+Q7.
+mysql> select * from sailors where rating=(Select MAX(rating) from sailors);
++-----+-------+--------+-----+
+| Sid | Sname | Rating | age |
++-----+-------+--------+-----+
+|  58 | Rusty |     10 |  35 |
++-----+-------+--------+-----+
+1 row in set (0.00 sec)
+
+***************************************************************************************************************************************************
+
+Q8.
+mysql> select S1.Sname from sailors S1 where Age=(Select MAX(Age) from sailors);
++--------+
+| Sname  |
++--------+
+| Lubber |
++--------+
+1 row in set (0.00 sec)
+
+***************************************************************************************************************************************************
+
+Q9.
+mysql> select count(Distinct(Sname)) as Distinct_Sailors_Name from sailors;
++-----------------------+
+| Distinct_Sailors_Name |
++-----------------------+
+|                     5 |
++-----------------------+
+1 row in set (0.00 sec)
+
+***************************************************************************************************************************************************
+
+Q12.
+mysql> select Sid from reserves group by Sid;
++-----+
+| Sid |
++-----+
+|  22 |
+|  31 |
+|  32 |
++-----+
+3 rows in set (0.00 sec)
+
+mysql> select Sid from reserves group by Sid having count(*)>=1;
++-----+
+| Sid |
++-----+
+|  22 |
+|  31 |
+|  32 |
++-----+
+3 rows in set (0.00 sec)
+
+***************************************************************************************************************************************************
+
+Q13.
+
+Version1:
+mysql> select * from sailors S1 where S1.Sid NOT IN(Select R1.Sid from reserves R1 group by R1.Sid);
++-----+--------+--------+-----+
+| Sid | Sname  | Rating | age |
++-----+--------+--------+-----+
+|  29 | Brutus |      1 |  33 |
+|  58 | Rusty  |     10 |  35 |
++-----+--------+--------+-----+
+2 rows in set (0.00 sec)
+
+Version2:
+mysql> select * from sailors where sailors.sid NOT IN(select Distinct(Sid) from sailors natural join reserves);
++-----+--------+--------+-----+
+| Sid | Sname  | Rating | age |
++-----+--------+--------+-----+
+|  29 | Brutus |      1 |  33 |
+|  58 | Rusty  |     10 |  35 |
++-----+--------+--------+-----+
+2 rows in set (0.00 sec)
+
+
+Version3:
+mysql> select * from sailors S1 where S1.Sid NOT IN (select DISTINCT(S2.Sid) from sailors S2,reserves R1 where S2.Sid=R1.Sid);
++-----+--------+--------+-----+
+| Sid | Sname  | Rating | age |
++-----+--------+--------+-----+
+|  29 | Brutus |      1 |  33 |
+|  58 | Rusty  |     10 |  35 |
++-----+--------+--------+-----+
+2 rows in set (0.02 sec)
+
+
+******************************************************************************************************************************************************
+
+Q14.
+mysql> select Sid from reserves group by reserves.Sid having COUNT(*)>=(Select COUNT(DISTINCT(Bid)) from boats);
+Empty set (0.00 sec)
+
+******************************************************************************************************************************************************
+
+Q15 .
+
+mysql> select * from sailors S1 where S1.age>(select age from sailors S2 where S2.Sname="Dustin");
++-----+--------+--------+-----+
+| Sid | Sname  | Rating | age |
++-----+--------+--------+-----+
+|  31 | Lubber |      9 |  55 |
++-----+--------+--------+-----+
+1 row in set (0.00 sec)
+
+
+********************************************************************************************************************************************************
+
+Q16.
+
+
+mysql> select * from sailors S1,sailors S2 where S1.rating>S2.rating order by S1.Sid;
++-----+--------+--------+-----+-----+--------+--------+-----+
+| Sid | Sname  | Rating | age | Sid | Sname  | Rating | age |
++-----+--------+--------+-----+-----+--------+--------+-----+
+|  22 | Dustin |      7 |  45 |  29 | Brutus |      1 |  33 |
+|  31 | Lubber |      9 |  55 |  29 | Brutus |      1 |  33 |
+|  31 | Lubber |      9 |  55 |  22 | Dustin |      7 |  45 |
+|  31 | Lubber |      9 |  55 |  32 | Andy   |      8 |  25 |
+|  32 | Andy   |      8 |  25 |  29 | Brutus |      1 |  33 |
+|  32 | Andy   |      8 |  25 |  22 | Dustin |      7 |  45 |
+|  58 | Rusty  |     10 |  35 |  22 | Dustin |      7 |  45 |
+|  58 | Rusty  |     10 |  35 |  32 | Andy   |      8 |  25 |
+|  58 | Rusty  |     10 |  35 |  31 | Lubber |      9 |  55 |
+|  58 | Rusty  |     10 |  35 |  29 | Brutus |      1 |  33 |
++-----+--------+--------+-----+-----+--------+--------+-----+
+10 rows in set (0.00 sec)
+
+************************************************************************************************************************************************************
+
+Q18. (Not Right Why ??????????????????????)
+mysql> select R1.Sid from reserves R1 where R1.Bid=ALL(select R2.Bid from reserves R2 where R2.Sid=31) and R1.Sid<>31;
++-----+
+| Sid |
++-----+
+|  22 |
++-----+
+
+********************************************************************************************************************************************************
+
+Q 20.
+create table customer(
+CustID int not null PRIMARY KEY AUTO_INCREMENT,
+Name varchar(100) not null,
+ReferredBy int
+);
+
+insert into customer(Name,ReferredBy)
+values("Neeta Sayam"),("Dolly Dilly",1),("Meena Kimi",2);
+
+********************************************************************************************************************************************************
+
+Q21
+mysql> select Name from customer where CustID<>ReferredBy;
++-------------+
+| Name        |
++-------------+
+| Dolly Dilly |
+| Meena Kimi  |
++-------------+
+
+************************************************************************************************************************************************************
+
+Q22.
+mysql> select Name from customer where CustID in(select ReferredBy from customer where CustID<>ReferredBy);
++-------------+
+| Name        |
++-------------+
+| Neeta Sayam |
+| Dolly Dilly |
++-------------+
+
+---------------------------------
