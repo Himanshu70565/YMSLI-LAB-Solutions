@@ -33,7 +33,7 @@ public class BookDaoImpl implements BookDao {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException(e);
 		}
 
 		return booksList;
@@ -56,13 +56,13 @@ public class BookDaoImpl implements BookDao {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException(e);
 		}
 		return null;
 	}
 
 	@Override
-	public void deleteBook(int id) throws DaoException {
+	public void deleteBook(int id) {
 		try {
 			String DELETE_BOOK_WITH_ID = "delete from books where books.id=?";
 			PreparedStatement ps = (PreparedStatement) connection.prepareStatement(DELETE_BOOK_WITH_ID);
@@ -77,7 +77,7 @@ public class BookDaoImpl implements BookDao {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException(e);
 		}
 	}
 
@@ -101,7 +101,7 @@ public class BookDaoImpl implements BookDao {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException(e);
 		}
 	}
 
@@ -121,7 +121,7 @@ public class BookDaoImpl implements BookDao {
 				throw new DaoException("!!!No book foud with id :" + id);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DaoException(e);
 		}
 		return book;
 	}
